@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+
+}
+
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookings  Booking[] //Relação de 1 para muitos(N) com Booking
+}
+
+model Barbershop {
+  id          String              @id @default(uuid())
+  name        String
+  address     String
+  phones      String[]
+  description String
+  imageUrl    String
+  services    BarbershopService[]//Relação de 1 para muitos(N) com BarbershopService
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model BarbershopService {
+  id           String  @id @default(uuid())
+  barbershopId String
+  name         String
+  description  String
+  price        Decimal @db.Decimal(10, 2)
+
+  barbershop Barbershop @relation(fields: [barbershopId], references: [id])//Relação de muitos(N) para 1 com Barbershop
+  bookings   Booking[]//Relação de 1 para muitos(N) com Booking
+}
+
+model Booking {
+  id           String   @id @default(uuid())
+  userId       String
+  barbershopId String
+  serviceId    String
+  date         DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user    User              @relation(fields: [userId], references: [id])//Relação de muitos(N) para 1 com User
+  service BarbershopService @relation(fields: [serviceId], references: [id])//Relação de muitos(N) para 1 com BarbershopService
+}
