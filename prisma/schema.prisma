@@ -39,10 +39,12 @@ model BarbershopService {
   barbershopId String
   name         String
   description  String
-  price        Decimal @db.Decimal(10, 2)
+  price        Float
+  imageUrl     String
 
   barbershop Barbershop @relation(fields: [barbershopId], references: [id])//Relação de muitos(N) para 1 com Barbershop
   bookings   Booking[]//Relação de 1 para muitos(N) com Booking
+  @@map("barbershop_services")
 }
 
 model Booking {

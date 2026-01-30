@@ -24,14 +24,15 @@ CREATE TABLE "Barbershop" (
 );
 
 -- CreateTable
-CREATE TABLE "BarbershopService" (
+CREATE TABLE "barbershop_services" (
     "id" TEXT NOT NULL,
     "barbershopId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "price" DECIMAL(10,2) NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+    "imageUrl" TEXT NOT NULL,
 
-    CONSTRAINT "BarbershopService_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "barbershop_services_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -48,10 +49,10 @@ CREATE TABLE "Booking" (
 );
 
 -- AddForeignKey
-ALTER TABLE "BarbershopService" ADD CONSTRAINT "BarbershopService_barbershopId_fkey" FOREIGN KEY ("barbershopId") REFERENCES "Barbershop"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "barbershop_services" ADD CONSTRAINT "barbershop_services_barbershopId_fkey" FOREIGN KEY ("barbershopId") REFERENCES "Barbershop"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Booking" ADD CONSTRAINT "Booking_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "BarbershopService"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Booking" ADD CONSTRAINT "Booking_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "barbershop_services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
