@@ -7,8 +7,12 @@ import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { db } from "./_lib/prisma"
+import BarbershopItem from "@/components/barbershop-item"
 
-const Home = () => {
+const Home = async () => {
+  const barbershops = await db.barbershop.findMany({}) //por serum server-components eu consigo acessar o banco de dados diretamente aqui
+
   return (
     <div>
       <Header />
@@ -23,6 +27,7 @@ const Home = () => {
           </Button>
         </div>
 
+        {/* IMAGEM */}
         <div className="relative mt-6 h-[150px] w-full">
           <Image
             src="/banner-01.png"
@@ -32,11 +37,16 @@ const Home = () => {
           />
         </div>
 
-        <Card className="mt-6">
+        {/* AGENDAMENTO */}
+        <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
+          Agendamentos
+        </h2>
+
+        <Card>
           <CardContent className="flex justify-between p-0">
             {/*Esquerda*/}
             <div className="flex flex-col gap-2 py-5 pl-5">
-              <Badge className="w-fit rounded-3xl bg-indigo-700 text-white">
+              <Badge className="w-fit rounded-full bg-indigo-700 text-white">
                 Confirmado
               </Badge>
               <h3 className="font-semibold">Corte de Cabelo</h3>
@@ -57,6 +67,15 @@ const Home = () => {
             </div>
           </CardContent>
         </Card>
+
+        <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
+          Recomendados
+        </h2>
+        <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
+          {barbershops.map((barbershop) => (
+            <BarbershopItem key={barbershop.id} barbershop={barbershop} />
+          ))}
+        </div>
       </div>
     </div>
   )
