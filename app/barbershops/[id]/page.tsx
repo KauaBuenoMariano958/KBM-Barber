@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon, MapIcon, MenuIcon, StarIcon } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import ServiceItem from "@/components/service-item"
 
 interface BarbershopPageProps {
   params: {
@@ -18,11 +19,17 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
     where: {
       id: params.id,
     },
+    include: {
+      //O include serve para trazer dados relacionados dos serviços da barbearia
+      services: true,
+    },
   })
 
   if (!barbershop) {
     return notFound()
   }
+
+  console.log(barbershop.services)
 
   return (
     /* IMAGEM */
@@ -73,6 +80,18 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
       <div className="space-y-2 border-b border-solid p-5">
         <h2 className="text-xs font-bold uppercase text-gray-400">Sobre nós</h2>
         <p className="text-justify text-sm">{barbershop?.description}</p>
+      </div>
+
+      {/* SERVIÇOS */}
+      <div className="space-y-3 p-5">
+        <h2 className="mb-3 text-xs font-bold uppercase text-gray-400">
+          Serviços
+        </h2>
+        <div className="space-y-3">
+          {barbershop.services.map((service) => (
+            <ServiceItem key={service.id} service={service} />
+          ))}
+        </div>
       </div>
     </div>
   )
