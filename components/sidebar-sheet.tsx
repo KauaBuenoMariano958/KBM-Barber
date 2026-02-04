@@ -16,7 +16,7 @@ const SidebarButton = () => {
 
       <div className="flex items-center gap-3 border-b border-solid py-5">
         <Avatar>
-          <AvatarImage src="FotoKaua.jpg" />
+          <AvatarImage src="/FotoKaua.jpg" />
         </Avatar>
 
         <div>
@@ -27,7 +27,7 @@ const SidebarButton = () => {
         </div>
       </div>
 
-      <div className="boerder-solid flex flex-col gap-2 border-b py-5">
+      <div className="flex flex-col gap-2 border-b border-solid py-5">
         <SheetClose asChild>
           <Button className="justify-start gap-2" asChild>
             <Link href="/">
@@ -42,7 +42,7 @@ const SidebarButton = () => {
         </Button>
       </div>
 
-      <div className="boerder-solid flex flex-col gap-3 border-b py-5">
+      <div className="flex flex-col gap-3 border-b border-solid py-5">
         {quickSearchItems.map((item) => (
           <Button
             className="gap- justify-start"
@@ -60,7 +60,7 @@ const SidebarButton = () => {
         ))}
       </div>
 
-      <div className="boerder-solid flex flex-col gap-3 border-b py-5">
+      <div className="flex flex-col gap-3 border-b border-solid py-5">
         <Button variant="ghost" className="justify-start gap-2">
           <LogOutIcon size={18} />
           Sair da Conta
