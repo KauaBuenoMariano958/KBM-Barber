@@ -6,21 +6,62 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-
 }
 
-
 model User {
-  id        String    @id @default(uuid())
-  name      String
-  email     String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  bookings  Booking[] //Relação de 1 para muitos(N) com Booking
-  ratings   Rating[]  //Relação de 1 para muitos(N) com Rating
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  bookings      Booking[]
+  ratings       Rating[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
 }
 
 model Barbershop {
@@ -30,22 +71,23 @@ model Barbershop {
   phones      String[]
   description String
   imageUrl    String
-  services    BarbershopService[]//Relação de 1 para muitos(N) com BarbershopService
-  ratings     Rating[]          //Relação de 1 para muitos(N) com Rating
+  services    BarbershopService[] //Relação de 1 para muitos(N) com BarbershopService
+  ratings     Rating[] //Relação de 1 para muitos(N) com Rating
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
 }
 
 model BarbershopService {
-  id           String  @id @default(uuid())
+  id           String @id @default(uuid())
   barbershopId String
   name         String
   description  String
   price        Float
   imageUrl     String
 
-  barbershop Barbershop @relation(fields: [barbershopId], references: [id])//Relação de muitos(N) para 1 com Barbershop
-  bookings   Booking[]//Relação de 1 para muitos(N) com Booking
+  barbershop Barbershop @relation(fields: [barbershopId], references: [id]) //Relação de muitos(N) para 1 com Barbershop
+  bookings   Booking[] //Relação de 1 para muitos(N) com Booking
+
   @@map("barbershop_services")
 }
 
@@ -58,12 +100,11 @@ model Booking {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  user    User              @relation(fields: [userId], references: [id])//Relação de muitos(N) para 1 com User
-  service BarbershopService @relation(fields: [serviceId], references: [id])//Relação de muitos(N) para 1 com BarbershopService
+  user    User              @relation(fields: [userId], references: [id]) //Relação de muitos(N) para 1 com User
+  service BarbershopService @relation(fields: [serviceId], references: [id]) //Relação de muitos(N) para 1 com BarbershopService
 }
 
-
-model Rating {//Comentários e avaliações dos usuários para as barbearias
+model Rating {
   id           String   @id @default(uuid())
   userId       String
   barbershopId String
@@ -72,6 +113,6 @@ model Rating {//Comentários e avaliações dos usuários para as barbearias
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  user       User       @relation(fields: [userId], references: [id])//Relação de muitos(N) para 1 com User
-  barbershop Barbershop @relation(fields: [barbershopId], references: [id])//Relação de muitos(N) para 1 com Barbershop
+  user       User       @relation(fields: [userId], references: [id]) //Relação de muitos(N) para 1 com User
+  barbershop Barbershop @relation(fields: [barbershopId], references: [id]) //Relação de muitos(N) para 1 com Barbershop
 }
