@@ -1,13 +1,12 @@
 import React from "react"
 import Header from "@/components/header"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { SearchIcon } from "lucide-react"
 import Image from "next/image"
 import { db } from "./_lib/prisma"
 import BarbershopItem from "@/components/barbershop-item"
 import { quickSearchItems } from "./_constants/search"
 import BookingItem from "@/components/booking-item"
+import Search from "@/components/search"
 
 const Home = async () => {
   const barbershops = await db.barbershop.findMany({}) //por serum server-components eu consigo acessar o banco de dados diretamente aqui
@@ -25,11 +24,9 @@ const Home = async () => {
         <p>Segunda-feira, 05 de agosto. </p>
 
         {/* BUSCA */}
-        <div className="mt-6 flex items-center gap-2">
-          <Input className="rounded-xl" placeholder="Faça a sua busca" />
-          <Button className="rounded-xl">
-            <SearchIcon />
-          </Button>
+
+        <div className="mt-6">
+          <Search />
         </div>
 
         {/* BUSCA RÁPIDA */}
