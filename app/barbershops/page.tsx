@@ -8,7 +8,8 @@ import Search from "@/components/search"
 
 interface BarbershopPageProps {
   searchParams: {
-    search?: string
+    title?: string
+    service?: string
   }
 }
 
@@ -16,10 +17,30 @@ const BarberShopPage = async ({ searchParams }: BarbershopPageProps) => {
   const barbershops = await db.barbershop.findMany({
     //Acesando o banco de dados para pegar as barbearias
     where: {
-      name: {
-        contains: searchParams?.search,
-        mode: "insensitive", //Ignora maiusculas e minusculas na busca
-      },
+      OR: [
+        searchParams?.title
+          ? {
+              //Se tiver o searchParams.title, ele vai fazer a busca pelo nome da barbearia
+              name: {
+                contains: searchParams?.title,
+                mode: "insensitive", //Ignora maiusculas e minusculas na busca
+              },
+            }
+          : {},
+        searchParams?.service
+          ? {
+              //Se tiver o searchParams.service, ele vai fazer a busca pelo nome do serviço da barbearia
+              services: {
+                some: {
+                  name: {
+                    contains: searchParams?.service,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            }
+          : {},
+      ],
     },
   })
 
@@ -32,7 +53,8 @@ const BarberShopPage = async ({ searchParams }: BarbershopPageProps) => {
 
       <div className="px-5">
         <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
-          Resultados para &quot;{searchParams?.search}&quot;
+          Resultados para &quot;{searchParams?.title || searchParams?.service}
+          &quot;
         </h2>
 
         <div className="grid grid-cols-2 gap-4">

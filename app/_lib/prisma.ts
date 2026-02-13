@@ -1,17 +1,20 @@
-//Impede que ocorra multiplas instancias do Banco de Dados em ambiente de desenvolvimento
-
 import { PrismaClient } from "@prisma/client"
 
-let cachedPrisma: PrismaClient | undefined;
-
-let prisma: PrismaClient
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient()
-} else {
-  if (!cachedPrisma) {
-    cachedPrisma = new PrismaClient()
-  }
-  prisma = cachedPrisma
+// Define um tipo para o global object
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
 }
 
-export const db = prisma
+// Configura o PrismaClient com logs e opções para o Neon
+export const db =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
+    errorFormat: "pretty",
+  })
+
+// Preserva a instância em desenvolvimento
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "ts-node --project tsconfig.seed.json --transpile-only prisma/seed.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+     "keep-alive": "ts-node --transpile-only keep-alive.ts",
+    "keep-alive:simple": "ts-node --transpile-only keep-alive-simple.ts"
   },
   "prisma": {
     "seed": "ts-node --project tsconfig.seed.json --transpile-only prisma/seed.ts"

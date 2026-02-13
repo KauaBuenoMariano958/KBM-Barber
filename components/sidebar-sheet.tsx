@@ -103,19 +103,19 @@ const SidebarButton = () => {
       </div>
       <div className="flex flex-col gap-3 border-b border-solid py-5">
         {quickSearchItems.map((item) => (
-          <Button
-            className="gap- justify-start"
-            variant="ghost"
-            key={item.title}
-          >
-            <Image
-              src={item.imageUrl}
-              width={18}
-              height={18}
-              alt={item.title}
-            />
-            {item.title}
-          </Button>
+          <SheetClose key={item.title} asChild>
+            <Button className="justify-start gap-2" variant="ghost" asChild>
+              <Link href={`/barbershops?service=${item.title}`}>
+                <Image
+                  src={item.imageUrl}
+                  width={18}
+                  height={18}
+                  alt={item.title}
+                />
+                {item.title}
+              </Link>
+            </Button>
+          </SheetClose>
         ))}
       </div>
       <div className="flex flex-col gap-3 border-b border-solid py-5">

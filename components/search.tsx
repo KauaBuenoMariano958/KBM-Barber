@@ -11,7 +11,7 @@ import * as z from "zod" //Importa a biblioteca Zod para validação de dados
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form" //Importa componentes de formulário personalizados
 
 const formSchema = z.object({
-  search: z.string().trim().min(1, {
+  title: z.string().trim().min(1, {
     message: "Digite algo para buscar",
   }), //Validação para garantir que a busca tenha pelo menos 3 caracteres
 })
@@ -20,14 +20,14 @@ const Search = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      search: "",
+      title: "",
     },
   })
 
   const router = useRouter()
 
   const handleSubmitForm = (data: z.infer<typeof formSchema>) => {
-    router.push(`/barbershops?search=${encodeURIComponent(data.search)}`)
+    router.push(`/barbershops?title=${encodeURIComponent(data.title)}`)
   }
 
   return (
@@ -38,7 +38,7 @@ const Search = () => {
       >
         <FormField
           control={form.control}
-          name="search"
+          name="title"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
