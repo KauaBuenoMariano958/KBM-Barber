@@ -20,6 +20,15 @@ const handler = NextAuth({
     })
   ],
   // ... resto do código
+  callbacks: { //
+    async session({session, user}){
+      session.user = {
+        ...session.user,
+        id: user.id
+      }
+      return session
+    }
+  }
 });
 
 export { handler as GET, handler as POST };
