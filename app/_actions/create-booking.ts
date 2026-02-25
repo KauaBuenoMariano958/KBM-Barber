@@ -3,7 +3,7 @@
 import { db } from "../_lib/prisma"
 import { revalidatePath } from "next/cache"
 
-export async function createBooking(params: {
+export async function createBooking(params: {//
   serviceId: string
   userId: string
   barbershopId: string
