@@ -7,22 +7,14 @@ import Image from "next/image"
 import { SheetContent, SheetHeader, SheetTitle, SheetClose } from "./ui/sheet"
 import { quickSearchItems } from "../app/_constants/search"
 import Link from "next/link"
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "./ui/dialog"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
+import { signOut, useSession } from "next-auth/react"
 import { Avatar, AvatarImage } from "./ui/avatar"
+import SignInDialog from "./sign-in-dialog"
 
 const SidebarButton = () => {
   const { data } = useSession()
 
-  const handleLoginWithGoogleClick = () =>
-    signIn("google", { callbackUrl: "/" }) // Redireciona para a página inicial após o login;
   const hancleLogoutClick = () => signOut() // Desloga o usuário;
 
   return (
@@ -52,6 +44,7 @@ const SidebarButton = () => {
         ) : (
           <>
             <h2 className="font-bold">Olá, faça seu login</h2>
+
             <Dialog>
               {" "}
               {/* Faz o botão de login aparecer */}
@@ -61,27 +54,7 @@ const SidebarButton = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent className="w-[90%]">
-                {" "}
-                {/* Conteúdo do login */}
-                <DialogHeader>
-                  <DialogTitle>Faça login na plataforma</DialogTitle>
-                  <DialogDescription>
-                    Conecte-se usando sua conta do Google
-                  </DialogDescription>
-                </DialogHeader>
-                <Button
-                  variant="outline"
-                  className="gap-2 font-bold"
-                  onClick={handleLoginWithGoogleClick}
-                >
-                  <Image
-                    src="/google.svg"
-                    width={18}
-                    height={18}
-                    alt="Fazer login com o Google"
-                  />
-                  Google
-                </Button>
+                <SignInDialog />
               </DialogContent>
             </Dialog>
           </>
@@ -118,16 +91,18 @@ const SidebarButton = () => {
           </SheetClose>
         ))}
       </div>
-      <div className="flex flex-col gap-3 border-b border-solid py-5">
-        <Button
-          variant="ghost"
-          className="justify-start gap-2"
-          onClick={hancleLogoutClick}
-        >
-          <LogOutIcon size={18} />
-          Sair da Conta
-        </Button>
-      </div>
+      {data?.user && (
+        <div className="flex flex-col gap-3 border-b border-solid py-5">
+          <Button
+            variant="ghost"
+            className="justify-start gap-2"
+            onClick={hancleLogoutClick}
+          >
+            <LogOutIcon size={18} />
+            Sair da Conta
+          </Button>
+        </div>
+      )}
     </SheetContent>
   )
 }
