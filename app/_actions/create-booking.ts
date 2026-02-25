@@ -1,31 +1,27 @@
 "use server"
 
-import { db } from "../_lib/prisma"
 import { revalidatePath } from "next/cache"
+import { db } from "../_lib/prisma"
+import { getServerSession } from "next-auth"
+import { authOptions } from "../_lib/auth"
 
-export async function createBooking(params: {//
+interface CreateBookingParams {
   serviceId: string
-  userId: string
   barbershopId: string
   date: Date
-}) {
-  console.log("🔵 SERVER ACTION - createBooking recebeu:", params)
+}
 
-  try {
-    const booking = await db.booking.create({
-      data: {
-        userId: params.userId,
-        serviceId: params.serviceId,
-        barbershopId: params.barbershopId,
-        date: params.date,
-      },
-    })
-
-    console.log("✅ SERVER ACTION - Booking criado:", booking)
-    revalidatePath("/bookings")
-    return booking
-  } catch (error) {
-    console.error("❌ SERVER ACTION - Erro:", error)
-    throw error
+export const createBooking = async (params: CreateBookingParams) => {
+  const user = await getServerSession(authOptions)
+  if (!user) {
+    throw new Error("Usuário não autenticado")
   }
+  await db.booking.create({
+    data: {
+      ...params,
+      userId: user.user.id,
+    },
+  })
+  revalidatePath("/barbershops/[id]")
+  revalidatePath("/bookings")
 }

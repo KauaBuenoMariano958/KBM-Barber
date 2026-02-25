@@ -18,7 +18,6 @@ import { format, set } from "date-fns"
 import { toast } from "sonner"
 import { getBooking } from "@/app/_actions/get-bookings"
 import { createBooking } from "@/app/_actions/create-booking"
-import { useSession } from "next-auth/react"
 import { Dialog, DialogContent } from "./ui/dialog"
 import SignInDialog from "./sign-in-dialog"
 
@@ -70,7 +69,6 @@ const getTimeList = (bookings: Booking[]) => {
 
 const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
   const [signInDialogIsOpen, setSignInDialogIsOpen] = useState(false)
-  const { data } = useSession()
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState<string | undefined>(
     undefined,
@@ -90,13 +88,6 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
     fetch()
   }, [selectedDay, service.id])
 
-  const handleBookingClick = () => {
-    if (data?.user) {
-      return setBookingSheetIsOpen(true)
-    }
-    return setSignInDialogIsOpen(true)
-  }
-
   const handleBookingSheetOpenChange = () => {
     setSelectedDay(undefined)
     setSelectedTime(undefined)
@@ -113,26 +104,11 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
   }
 
   const handleCreateBooking = async () => {
-    //
     console.log("🔵 handleCreateBooking FOI CHAMADO!")
 
     if (!selectedDay || !selectedTime) {
       console.log("❌ Dia ou hora não selecionados")
       return
-    }
-
-    // Determina qual userId usar
-    let userId: string
-
-    if (data?.user?.id) {
-      // ← AGORA USA data.user.id, não email
-      // Se tem sessão, usa o ID do usuário logado
-      userId = data.user.id
-      console.log("✅ Usando usuário logado - ID:", userId)
-    } else {
-      // Se não tem sessão, usa ID fixo para teste (o mesmo que funcionou)
-      userId = "cmlv2ag4f0000esstxycw9xfw"
-      console.log("⚠️ Usando ID fixo para teste:", userId)
     }
 
     try {
@@ -144,11 +120,9 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
       })
 
       console.log("📅 Data formatada:", newDate)
-      console.log("📤 Enviando booking com userId:", userId)
 
       const result = await createBooking({
         serviceId: service.id,
-        userId: userId,
         barbershopId: barbershop.id,
         date: newDate,
       })
@@ -197,7 +171,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                 <Button
                   variant="secondary"
                   size="sm"
-                  onClick={handleBookingClick}
+                  onClick={() => setBookingSheetIsOpen(true)}
                 >
                   Reservar
                 </Button>
