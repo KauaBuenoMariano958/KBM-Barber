@@ -69,9 +69,11 @@ const SidebarButton = () => {
             </Link>
           </Button>
         </SheetClose>
-        <Button className="justify-start gap-2" variant="ghost">
-          <CalculatorIcon size={18} />
-          Agendamento
+        <Button className="justify-start gap-2" asChild variant="ghost">
+          <Link href="/bookings">
+            <CalculatorIcon size={18} />
+            Agendamento
+          </Link>
         </Button>
       </div>
       <div className="flex flex-col gap-3 border-b border-solid py-5">
