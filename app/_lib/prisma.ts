@@ -1,17 +1,18 @@
-// app/_lib/prisma.ts
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-// PRISMA CLIENT CONFIGURADO PARA USAR POOLER
-export const db =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["error"] : ["error"],
-    // FORÇA O USO DA URL COM POOLER
-    datasourceUrl: process.env.DATABASE_URL,
-  })
+// Configuração IDÊNTICA à que funcionou no DBeaver
+export const db = globalForPrisma.prisma ?? new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL
+    }
+  },
+  // Logs para debug (opcional)
+  log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+})
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
