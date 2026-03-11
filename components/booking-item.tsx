@@ -51,11 +51,11 @@ const BookingItem = ({ booking }: BookingItemProps) => {
     service: { barbershop },
   } = booking
   const isConfirmed = isFuture(booking.date)
-  const handleCancelBookinh = async () => {
+  const handleCancelBooking = async () => {
     try {
       await deleteBooking(booking.id)
       setIsSheetOpen(false)
-      toast.sucess("Reserva cancelada com sucesso!")
+      toast.success("Reserva cancelada com sucesso!")
     } catch (error) {
       console.error(error)
       toast.error("Erro ao cancelar reserva. Tente novamente.")
@@ -221,7 +221,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
                       <Button
                         variant="destructive"
                         className="w-full"
-                        onClick={handleCancelBookinh}
+                        onClick={handleCancelBooking}
                       >
                         Confirmar
                       </Button>
